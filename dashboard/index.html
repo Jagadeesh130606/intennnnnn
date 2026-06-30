@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Shadow AI — IaC Security Pipeline Dashboard for prompt scanning, intent extraction, and infrastructure validation." />
+  <title>Shadow AI · IaC Security Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════ HEADER ═══════════════════ -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo-block">
+      <span class="logo-icon">🛡️</span>
+      <div>
+        <h1 class="site-title">Shadow AI</h1>
+        <p class="site-sub">IaC Security Pipeline</p>
+      </div>
+    </div>
+    <div class="header-status" id="pipeline-status">
+      <span class="status-dot idle"></span>
+      <span class="status-text">Idle</span>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════ PIPELINE STEPS ═══════════════════ -->
+<main class="container">
+
+  <!-- ── STEP TRACKER ── -->
+  <div class="step-tracker">
+    <div class="step-item active" id="step-1-track">
+      <div class="step-num">1</div>
+      <span>Prompt Scan</span>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item" id="step-2-track">
+      <div class="step-num">2</div>
+      <span>Intent Extract</span>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item" id="step-3-track">
+      <div class="step-num">3</div>
+      <span>IaC Audit</span>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item" id="step-4-track">
+      <div class="step-num">4</div>
+      <span>Attack Graph</span>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item" id="step-5-track">
+      <div class="step-num">5</div>
+      <span>Risk Score</span>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item" id="step-6-track">
+      <div class="step-num">6</div>
+      <span>Deploy</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       PHASE 1 — PROMPT SCANNER
+  ══════════════════════════════════════════════════════ -->
+  <section class="card" id="phase-prompt">
+    <div class="card-header">
+      <div class="card-badge badge-blue">Phase 1</div>
+      <h2 class="card-title">🔍 Prompt Scanner</h2>
+      <p class="card-desc">Enter your IaC infrastructure prompt. The scanner checks for PII, secrets leakage, and prompt injection before extracting intent.</p>
+    </div>
+
+    <div class="card-body">
+      <label class="field-label" for="prompt-input">Infrastructure Prompt</label>
+      <textarea
+        id="prompt-input"
+        class="code-area"
+        rows="7"
+        placeholder="Example: Deploy a VPC in ap-south-1 with 2 private subnets, an RDS PostgreSQL with encryption enabled, CloudTrail logging, and IAM least-privilege roles. Use KMS for at-rest encryption..."
+        spellcheck="false"
+      ></textarea>
+
+      <div class="action-row">
+        <div class="char-count" id="char-count">0 characters</div>
+        <button id="btn-scan" class="btn btn-primary" onclick="runScan()">
+          <span class="btn-icon">⚡</span>
+          Proceed to Prompt Scan
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       PHASE 1 OUTPUT — SCAN RESULTS
+  ══════════════════════════════════════════════════════ -->
+  <section class="card hidden" id="phase-scan-results">
+    <div class="card-header">
+      <div class="card-badge badge-green">Scan Output</div>
+      <h2 class="card-title">📋 Prompt Scan Results</h2>
+    </div>
+    <div class="card-body">
+
+      <!-- LLM Guard Status Banner -->
+      <div id="guard-banner" class="result-banner"></div>
+
+      <!-- Scores Grid -->
+      <div class="scores-grid" id="scores-grid"></div>
+
+      <!-- Warnings -->
+      <div id="warnings-section" class="hidden">
+        <h3 class="section-heading">⚠️ Warnings Detected</h3>
+        <div id="warnings-list" class="warnings-list"></div>
+      </div>
+
+      <!-- Sanitized Prompt -->
+      <div id="sanitized-section">
+        <h3 class="section-heading">🧹 Sanitized Prompt</h3>
+        <pre id="sanitized-prompt" class="output-pre"></pre>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       PHASE 2 — INTENT EXTRACTOR OUTPUT
+  ══════════════════════════════════════════════════════ -->
+  <section class="card hidden" id="phase-intent">
+    <div class="card-header">
+      <div class="card-badge badge-purple">Phase 2</div>
+      <h2 class="card-title">🧠 Intent Extractor</h2>
+      <p class="card-desc">Rule-based intent analysis — understands negation keywords like <code class="inline-code">not</code>, <code class="inline-code">without</code>, <code class="inline-code">disable</code>, <code class="inline-code">no</code>, <code class="inline-code">never</code>, <code class="inline-code">don't</code>.</p>
+    </div>
+    <div class="card-body">
+
+      <!-- Intent Summary Banner -->
+      <div id="intent-summary-banner" class="intent-summary-block"></div>
+
+      <!-- Intent Grid -->
+      <div class="intent-grid" id="intent-grid"></div>
+
+      <!-- Conflicts -->
+      <div id="conflicts-section" class="hidden">
+        <h3 class="section-heading conflict-heading">⛔ Conflicts Detected</h3>
+        <div id="conflicts-list" class="conflicts-list"></div>
+      </div>
+
+      <!-- Resources -->
+      <div id="resources-section">
+        <h3 class="section-heading">📦 Expected Resources</h3>
+        <div id="resources-list" class="resources-chips"></div>
+      </div>
+
+      <!-- Compliance -->
+      <div id="compliance-section" class="hidden">
+        <h3 class="section-heading">✅ Compliance Frameworks</h3>
+        <div id="compliance-list" class="resources-chips"></div>
+      </div>
+
+      <!-- Full JSON Toggle -->
+      <details class="json-details">
+        <summary>View raw constraint schema JSON</summary>
+        <pre id="intent-json" class="output-pre mono-small"></pre>
+      </details>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       PHASE 3 — IaC SCRIPT (AI-generated or manual)
+       Auto-unlocked when prompt scan passes with ALL scores < 25%
+  ══════════════════════════════════════════════════════ -->
+  <section class="card hidden" id="phase-iac">
+    <div class="card-header">
+      <div class="card-badge badge-orange">Phase 3</div>
+      <h2 class="card-title">⚡ IaC Script Generator</h2>
+      <p class="card-desc">
+        When your prompt passes all checks with <strong>&lt;25% risk</strong>, the AI auto-generates an IaC script via
+        <strong>HuggingFace AI (free)</strong>. You can also write or paste a script manually.
+      </p>
+    </div>
+    <div class="card-body">
+
+      <!-- ── AI Generation Banner (shown when auto-triggered) ── -->
+      <div id="iac-gen-banner" class="hidden" style="
+        display:flex; align-items:center; gap:12px; padding:12px 16px;
+        background:linear-gradient(135deg,rgba(99,130,255,.12),rgba(62,207,142,.08));
+        border:1px solid rgba(99,130,255,.3); border-radius:10px; margin-bottom:16px;
+        font-size:.85rem; color:var(--text-secondary);">
+        <span id="iac-gen-icon" style="font-size:1.3rem">🤖</span>
+        <span id="iac-gen-label">Ready to generate IaC script via Groq AI…</span>
+      </div>
+
+      <!-- ── Gemini API Key Row ── -->
+      <div class="iac-key-row" id="iac-key-row">
+        <label class="field-label" for="groq-api-key" style="margin:0;white-space:nowrap;font-size:.8rem">
+          🔑 HuggingFace Token
+          <a href="https://huggingface.co/settings/tokens" target="_blank" rel="noopener"
+             style="color:var(--accent-blue);font-size:.72rem;margin-left:6px;">(free token →)</a>
+        </label>
+        <input
+          id="groq-api-key"
+          type="password"
+          placeholder="hf_..."
+          autocomplete="off"
+          oninput="onGroqKeyChange()"
+        />
+        <button id="btn-test-key" class="btn btn-ghost btn-sm" onclick="testGeminiKey()" disabled title="Validate your API key">
+          🔍 Test Key
+        </button>
+        <button id="btn-generate-iac" class="btn btn-primary btn-sm" onclick="generateIacFromGroq()" disabled>
+          <span class="btn-icon">✨</span> Generate IaC
+        </button>
+      </div>
+
+      <!-- Key status line -->
+      <div id="key-status-line" class="hidden" style="
+        font-size:.78rem; margin-bottom:10px; padding:6px 12px;
+        border-radius:6px; display:flex; align-items:center; gap:8px;">
+      </div>
+
+      <!-- How-to box (always visible) -->
+      <div style="
+        font-size:.76rem; color:var(--text-muted); background:rgba(255,255,255,.02);
+        border:1px dashed rgba(255,255,255,.08); border-radius:8px;
+        padding:10px 14px; margin-bottom:14px; line-height:1.7;">
+        <strong style="color:var(--text-secondary);">🆓 Get a free HuggingFace token in 30 seconds:</strong><br>
+        1. Visit <a href="https://huggingface.co/settings/tokens" target="_blank" style="color:var(--accent-blue);">huggingface.co/settings/tokens</a>
+        &nbsp;→&nbsp; 2. Sign up free (no credit card)
+        &nbsp;→&nbsp; 3. Click <strong>New token</strong> → Type: <strong>Read</strong>
+        &nbsp;→&nbsp; 4. Copy the <code style="color:#a0cfff;background:rgba(99,130,255,.1);padding:1px 5px;border-radius:3px;">hf_...</code> token and paste above
+      </div>
+
+      <!-- ── Language Tabs + Clear ── -->
+      <div class="iac-toolbar">
+        <div class="lang-tabs">
+          <button class="lang-tab active" data-lang="terraform"      onclick="selectLang(this)">Terraform</button>
+          <button class="lang-tab" data-lang="cloudformation" onclick="selectLang(this)">CloudFormation</button>
+          <button class="lang-tab" data-lang="pulumi"         onclick="selectLang(this)">Pulumi</button>
+          <button class="lang-tab" data-lang="ansible"        onclick="selectLang(this)">Ansible</button>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span id="iac-source-badge" class="hidden" style="
+            font-size:.7rem; padding:2px 10px; border-radius:50px;
+            background:rgba(62,207,142,.15); border:1px solid rgba(62,207,142,.3);
+            color:#3ecf8e; white-space:nowrap;">
+          </span>
+          <button class="btn btn-ghost btn-sm" onclick="clearIac()">Clear</button>
+        </div>
+      </div>
+
+      <textarea
+        id="iac-input"
+        class="code-area mono"
+        rows="16"
+        placeholder="# Your IaC script will appear here automatically after Groq generates it.
+# You can also type or paste a script manually at any time.
+#
+# Example (Terraform):
+# resource &quot;aws_s3_bucket&quot; &quot;example&quot; {
+#   bucket = &quot;my-secure-bucket&quot;
+# }"
+        spellcheck="false"
+      ></textarea>
+
+      <div class="action-row">
+        <div class="iac-note" id="iac-footer-note">
+          <span class="note-icon">ℹ️</span>
+          Enter your Groq API key above to auto-generate, or type/paste manually.
+        </div>
+        <button id="btn-iac-submit" class="btn btn-secondary" onclick="submitIac()">
+          <span class="btn-icon">🔒</span>
+          Submit for Audit
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       PHASE 4 — ATTACK GRAPH (placeholder)
+  ══════════════════════════════════════════════════════ -->
+  <section class="card hidden" id="phase-attack">
+    <div class="card-header">
+      <div class="card-badge badge-red">Phase 4</div>
+      <h2 class="card-title">🕸️ Attack Graph</h2>
+      <p class="card-desc">Visual representation of potential attack paths based on the IaC configuration. Generated after audit completes.</p>
+    </div>
+    <div class="card-body">
+      <div class="placeholder-zone" id="attack-graph-zone">
+        <div class="placeholder-icon">🕸️</div>
+        <p class="placeholder-title">Attack Graph Output</p>
+        <p class="placeholder-sub">Will render here after IaC audit completes.<br/>Shows lateral movement paths, privilege escalation vectors, and blast radius.</p>
+        <div class="placeholder-badges">
+          <span class="chip chip-gray">Lateral Movement</span>
+          <span class="chip chip-gray">Privilege Escalation</span>
+          <span class="chip chip-gray">Data Exfiltration Paths</span>
+          <span class="chip chip-gray">Network Exposure</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       PHASE 5 — RISK SCORE (placeholder)
+  ══════════════════════════════════════════════════════ -->
+  <section class="card hidden" id="phase-risk">
+    <div class="card-header">
+      <div class="card-badge badge-yellow">Phase 5</div>
+      <h2 class="card-title">📊 Risk Score</h2>
+      <p class="card-desc">Composite security risk assessment across all audited dimensions.</p>
+    </div>
+    <div class="card-body">
+      <div class="risk-placeholder-grid">
+
+        <div class="risk-placeholder-card">
+          <div class="risk-placeholder-circle">
+            <span class="risk-placeholder-num">—</span>
+          </div>
+          <p class="risk-label">Overall Risk</p>
+        </div>
+
+        <div class="risk-breakdown-section">
+          <h3 class="section-heading">Breakdown</h3>
+          <div class="risk-bars">
+            <div class="risk-bar-row">
+              <span class="risk-bar-label">Network Exposure</span>
+              <div class="risk-bar-track"><div class="risk-bar-fill placeholder-bar"></div></div>
+              <span class="risk-bar-val">—</span>
+            </div>
+            <div class="risk-bar-row">
+              <span class="risk-bar-label">IAM Permissions</span>
+              <div class="risk-bar-track"><div class="risk-bar-fill placeholder-bar"></div></div>
+              <span class="risk-bar-val">—</span>
+            </div>
+            <div class="risk-bar-row">
+              <span class="risk-bar-label">Data Encryption</span>
+              <div class="risk-bar-track"><div class="risk-bar-fill placeholder-bar"></div></div>
+              <span class="risk-bar-val">—</span>
+            </div>
+            <div class="risk-bar-row">
+              <span class="risk-bar-label">Logging Coverage</span>
+              <div class="risk-bar-track"><div class="risk-bar-fill placeholder-bar"></div></div>
+              <span class="risk-bar-val">—</span>
+            </div>
+            <div class="risk-bar-row">
+              <span class="risk-bar-label">Compliance Gap</span>
+              <div class="risk-bar-track"><div class="risk-bar-fill placeholder-bar"></div></div>
+              <span class="risk-bar-val">—</span>
+            </div>
+          </div>
+          <p class="placeholder-sub" style="margin-top:1rem;">Risk scores will populate after IaC audit engine runs.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       PHASE 6 — DEPLOY DECISION (placeholder)
+  ══════════════════════════════════════════════════════ -->
+  <section class="card hidden" id="phase-deploy">
+    <div class="card-header">
+      <div class="card-badge badge-green">Phase 6</div>
+      <h2 class="card-title">🚀 Deployment Decision</h2>
+      <p class="card-desc">Final go/no-go decision based on the complete security pipeline result.</p>
+    </div>
+    <div class="card-body">
+
+      <div class="deploy-placeholder">
+
+        <div class="deploy-status-block" id="deploy-status-block">
+          <div class="deploy-icon-large">🔐</div>
+          <p class="deploy-status-text">Awaiting pipeline completion</p>
+          <p class="deploy-status-sub">Complete all phases to unlock the deploy decision</p>
+        </div>
+
+        <div class="deploy-actions">
+          <button class="btn btn-deploy-approve" id="btn-approve" disabled>
+            <span>✅</span> Approve & Deploy
+          </button>
+          <button class="btn btn-deploy-reject" id="btn-reject" disabled>
+            <span>🚫</span> Reject — Revise Script
+          </button>
+        </div>
+
+        <div class="deploy-checklist">
+          <h3 class="section-heading">Pre-Deploy Checklist</h3>
+          <ul class="checklist" id="deploy-checklist">
+            <li class="check-item pending" id="check-scan">
+              <span class="check-icon">⏳</span>
+              <span>Prompt scan passed (no PII / injection / secrets)</span>
+            </li>
+            <li class="check-item pending" id="check-intent">
+              <span class="check-icon">⏳</span>
+              <span>Intent extracted successfully</span>
+            </li>
+            <li class="check-item pending" id="check-iac">
+              <span class="check-icon">⏳</span>
+              <span>IaC script submitted for audit</span>
+            </li>
+            <li class="check-item pending" id="check-attack">
+              <span class="check-icon">⏳</span>
+              <span>Attack graph analysis complete</span>
+            </li>
+            <li class="check-item pending" id="check-risk">
+              <span class="check-icon">⏳</span>
+              <span>Risk score within acceptable threshold</span>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══════════════════ LOADING OVERLAY ═══════════════════ -->
+<div class="loading-overlay hidden" id="loading-overlay">
+  <div class="loading-card">
+    <div class="spinner"></div>
+    <p class="loading-title" id="loading-title">Running Prompt Scanner…</p>
+    <p class="loading-sub" id="loading-sub">LLM Guard: PII · Secrets · Injection</p>
+  </div>
+</div>
+
+<!-- ═══════════════════ TOAST ═══════════════════ -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- ═══════════════════ SCRIPTS ═══════════════════ -->
+<script src="app.js"></script>
+</body>
+</html>

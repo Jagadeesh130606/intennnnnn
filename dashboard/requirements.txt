@@ -1,0 +1,4 @@
+# Shadow AI IaC Security Dashboard — Python dependencies
+flask>=3.0.0
+llm-guard>=0.3.0
+torch>=2.0.0

@@ -1,0 +1,66 @@
+{
+  "region": {
+    "code": "ap-south-1",
+    "name": "Asia Pacific (Mumbai)"
+  },
+  "access": {
+    "ssh": {
+      "configured": true,
+      "open_to_world": false,
+      "allowed_cidrs": [],
+      "restricted_to_office": true
+    },
+    "public_s3": false
+  },
+  "encryption": {
+    "enabled": true,
+    "disabled": false,
+    "kms": true,
+    "negation_detected": false
+  },
+  "iam": {
+    "least_privilege": true,
+    "admin_access": false,
+    "lp_negated": false
+  },
+  "availability": {
+    "multi_az": true,
+    "az_count": null,
+    "ec2_count": 2
+  },
+  "logging": {
+    "enabled": true,
+    "disabled": false,
+    "cloudtrail": true,
+    "cloudwatch": true
+  },
+  "negation_keywords_found": [
+    "avoid"
+  ],
+  "compliance_frameworks": [
+    "PCI-DSS",
+    "ISO27001"
+  ],
+  "expected_resources": [
+    "VPC",
+    "Subnets",
+    "Application Load Balancer",
+    "EC2 Instances",
+    "RDS Database",
+    "S3 Bucket",
+    "CloudTrail",
+    "CloudWatch",
+    "KMS",
+    "IAM Roles",
+    "Security Groups",
+    "Route 53 / DNS",
+    "CloudFront CDN",
+    "SNS / SQS",
+    "NAT Gateway",
+    "Internet Gateway",
+    "Secrets Manager / SSM",
+    "AWS Config"
+  ],
+  "conflicts_detected": [],
+  "intent_summary": "Deploy to asia pacific (mumbai) (ap-south-1). provision 18 resource type(s). with multi-az availability. encryption enabled. logging/auditing enabled. compliance: pci-dss, iso27001. iam least-privilege."
+}

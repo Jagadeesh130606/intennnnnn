@@ -1,0 +1,51 @@
+{
+  "raw_prompt": "jfjkfgku",
+  "sanitized_prompt": "jfjkfgku",
+  "safe_to_proceed": true,
+  "warnings": [],
+  "scores": {
+    "Anonymize": -1.0,
+    "Secrets": -1.0,
+    "PromptInjection": -1.0
+  },
+  "constraint_schema": {
+    "region": {},
+    "access": {
+      "ssh": {
+        "configured": false
+      },
+      "public_s3": false
+    },
+    "encryption": {
+      "enabled": false,
+      "disabled": false,
+      "kms": false,
+      "negation_detected": false
+    },
+    "iam": {
+      "least_privilege": false,
+      "admin_access": false,
+      "lp_negated": false
+    },
+    "availability": {
+      "multi_az": false,
+      "az_count": null,
+      "ec2_count": null
+    },
+    "logging": {
+      "enabled": false,
+      "disabled": false,
+      "cloudtrail": false,
+      "cloudwatch": false
+    },
+    "negation_keywords_found": [],
+    "compliance_frameworks": [],
+    "expected_resources": [],
+    "conflicts_detected": [],
+    "intent_summary": "No clear IaC intent detected."
+  },
+  "expected_resources": [],
+  "intent_summary": "No clear IaC intent detected.",
+  "conflicts": [],
+  "compliance": []
+}

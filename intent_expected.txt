@@ -1,0 +1,56 @@
+============================================================
+  SHADOW AI — EXTRACTED INTENT
+============================================================
+
+Intent Summary : Deploy to asia pacific (mumbai) (ap-south-1). provision 9 resource type(s). encryption enabled. logging/auditing enabled. iam least-privilege.
+Safe to Proceed: True
+
+── Region ─────────────────────────────────────────────────
+  Code : ap-south-1
+  Name : Asia Pacific (Mumbai)
+
+── Encryption ─────────────────────────────────────────────
+  Enabled  : True
+  Disabled : False
+  KMS      : False
+
+── IAM ────────────────────────────────────────────────────
+  Least Privilege : True
+  Admin Access    : False
+
+── Availability ───────────────────────────────────────────
+  Multi-AZ  : False
+  AZ Count  : None
+  EC2 Count : 2
+
+── Logging ────────────────────────────────────────────────
+  Enabled     : True
+  CloudTrail  : True
+  CloudWatch  : True
+
+── Access ─────────────────────────────────────────────────
+  SSH Configured  : True
+  SSH Open World  : False
+  Public S3       : False
+
+── Expected Resources ──────────────────────────────────────
+  - VPC
+  - Subnets
+  - Application Load Balancer
+  - EC2 Instances
+  - RDS Database
+  - S3 Bucket
+  - CloudTrail
+  - CloudWatch
+  - IAM Roles
+
+── Compliance Frameworks ───────────────────────────────────
+  None detected
+
+── Negation Keywords Found ─────────────────────────────────
+  None
+
+── Conflicts Detected ──────────────────────────────────────
+  None
+
+============================================================

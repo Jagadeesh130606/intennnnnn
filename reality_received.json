@@ -1,0 +1,84 @@
+{
+  "generated_at": "2026-06-30T15:51:46.221922",
+  "model_used": "openai/gpt-oss-120b:cerebras",
+  "language": "terraform",
+  "original_prompt": "Design a production-ready AWS infrastructure for a multi-region e-commerce platform that supports high availability, scalability, and disaster recovery. Create a VPC with separate public, private, and database subnets across three Availability Zones. Deploy an Application Load Balancer routing traffic to an Auto Scaling Group of EC2 instances hosting the web application. Use Amazon RDS PostgreSQL with Multi-AZ deployment and automated backups for transactional data. Store static assets in an S3 bucket with server-side encryption enabled using AWS KMS. Configure CloudFront as the CDN with HTTPS enforcement. Enable CloudTrail, CloudWatch Logs, VPC Flow Logs, and AWS Config for auditing and monitoring. Restrict inbound traffic to HTTPS only and allow SSH access exclusively through AWS Systems Manager Session Manager. Implement IAM roles following the principle of least privilege and avoid wildcard permissions. Use security groups and network ACLs to isolate the web, application, and database tiers. Deploy the infrastructure in the ap-south-1 region while ensuring compatibility with us-east-1 for disaster recovery. Configure Route 53 with health checks and automatic DNS failover. Store application secrets in AWS Secrets Manager and use customer-managed KMS keys for encryption. Enable versioning and lifecycle policies for S3, configure backup retention for 35 days, enforce TLS 1.2 or higher for all endpoints, and ensure compliance with ISO 27001, PCI-DSS, and CIS AWS Foundations Benchmark. The expected resources include VPC, subnets, Internet Gateway, NAT Gateway, Route Tables, EC2, Auto Scaling Group, Application Load Balancer, RDS PostgreSQL, S3, CloudFront, Route 53, IAM Roles, Security Groups, CloudTrail, CloudWatch, AWS Config, Secrets Manager, KMS, and SNS for operational alerts. Provide a concise summary of the intended architecture, identify the required cloud resources, list the expected security controls, and describe how the design satisfies the specified compliance requirements.",
+  "lines_of_code": 160,
+  "region": {
+    "code": "us-east-1",
+    "name": "US East (N. Virginia)"
+  },
+  "access": {
+    "ssh": {
+      "configured": false,
+      "open_to_world": false,
+      "restricted_to_office": false
+    },
+    "public_s3": false
+  },
+  "encryption": {
+    "enabled": true,
+    "disabled": false,
+    "kms": true,
+    "negation_detected": false
+  },
+  "iam": {
+    "least_privilege": false,
+    "admin_access": false,
+    "lp_negated": false
+  },
+  "availability": {
+    "multi_az": false,
+    "ec2_count": null
+  },
+  "logging": {
+    "enabled": true,
+    "disabled": false,
+    "cloudtrail": false,
+    "cloudwatch": false
+  },
+  "tagging": {
+    "present": true
+  },
+  "compliance_frameworks": [],
+  "detected_resources": {
+    "VPC": true,
+    "Subnets": true,
+    "Application Load Balancer": false,
+    "Auto Scaling Group": false,
+    "EC2 Instances": false,
+    "RDS Database": false,
+    "S3 Bucket": false,
+    "CloudTrail": false,
+    "CloudWatch": false,
+    "KMS": true,
+    "IAM Roles": false,
+    "Security Groups": true,
+    "NAT Gateway": true,
+    "Internet Gateway": true,
+    "Route Tables": true,
+    "Secrets Manager / SSM": true,
+    "SNS / SQS": false,
+    "CloudFront CDN": false,
+    "Route 53 / DNS": false,
+    "AWS Config": false,
+    "EKS / Kubernetes": false,
+    "Lambda": false
+  },
+  "resource_list": [
+    "VPC",
+    "Subnets",
+    "KMS",
+    "Security Groups",
+    "NAT Gateway",
+    "Internet Gateway",
+    "Route Tables",
+    "Secrets Manager / SSM"
+  ],
+  "resource_count": 8,
+  "issues_detected": [
+    "CloudTrail not detected in generated script"
+  ],
+  "reality_summary": "Deployed to US East (N. Virginia) (us-east-1). 8 resource type(s) detected. encryption implemented. logging/auditing present.",
+  "iac_preview": "provider \"aws\" {\n  region = \"ap-south-1\"\n  alias  = \"primary\"\n}\n\nprovider \"aws\" {\n  region = \"us-east-1\"\n  alias  = \"dr\"\n}\n\n# Common tags\nlocals {\n  common_tags = {\n    Project   = \"ecommerce-platform\"\n    Owner     = \"devops-team\"\n    Environment = \"production\"\n    ManagedBy = \"terraform\"\n  }\n}\n\n#########################\n# KMS Keys\n#########################\nresource \"aws_kms_key\" \"s3_bucket_key\" {\n  description         = \"KMS key for S3 bucket encryption\"\n  deletion_window_in_days = 30\n  enable_key_rotation = true\n  tags                = local.common_tags\n}\n\nresource \"aws_kms_key\" \"secrets_manager_key\" {\n  description         = \"KMS key for Secrets Manager encryption\"\n  deletion_window_in_days = 30\n  enable_key_rotation = true\n  tags                = local.common_tags\n}\n\n#################\u2026"
+}
